@@ -1,0 +1,56 @@
+
+
+function get {
+	echo -n http proxy:
+	gsettings get org.gnome.system.proxy.http host 
+	echo -n https proxy:
+	gsettings get org.gnome.system.proxy.https host
+	echo -n port :
+	gsettings get org.gnome.system.proxy.http port 
+}
+
+function setproxy {
+	
+
+	gsettings set org.gnome.system.proxy.http host $1
+	gsettings set org.gnome.system.proxy.https host $1
+ 	gsettings set org.gnome.system.proxy.http port $2
+	
+	echo Proxy set to : 
+	echo $1
+	echo $2
+
+	
+}
+
+case $2 in
+	2) 
+	echo Changing proxy to 172.20.0.$1 Port:8080
+	setproxy 172.20.0.$1 8080
+	;;
+	*)
+	case $1 in
+	'unset') 
+	gsettings set org.gnome.system.proxy mode 'none'
+	echo Proxy settings removed
+ 	;;
+ 	'get') 
+	get
+ 	;;
+ 	'--help') 
+	echo proxy unset : for removing proxy 
+	echo proxy n : for setting proxy to 172.30.0.n:3128
+	echo proxy n 2 : for setting proxy to 172.20.0.n:8080
+	;;   
+	*)case $1 in
+    ''|*[!0-9]*) echo Invalid command . Type 'proxy --help' for more info
+    ;;
+    *) echo Changing proxy to 172.30.0.$1 port:3128
+    setproxy 172.30.0.$1 3128
+    ;;
+	esac
+	
+	;;
+	esac
+	;;
+esac	
